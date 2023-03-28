@@ -1,0 +1,34 @@
+{
+  "name": "vue-js-driver",
+  "version": "1.0.0",
+  "description": "基于driver.js封装的vue2版本轻量级新手引导库",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hua909000/vue-js-driver.git"
+  },
+  "keywords": [
+    "guide",
+    "driver",
+    "driver.js",
+    "vue",
+    "intro.js",
+    "js",
+    "引导",
+    "新手引导",
+    "引导式访问",
+    "步骤"
+  ],
+  "author": "Mr.zhou <hua909000@163.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hua909000/vue-js-driver/issues"
+  },
+  "homepage": "https://github.com/hua909000/vue-js-driver",
+  "dependencies": {
+    "driver.js": "^0.9.8"
+  }
+}
