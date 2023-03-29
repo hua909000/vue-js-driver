@@ -19,7 +19,9 @@
 
 
 ## 🎬 在线体验
-Live Demo
+[Live Demo](https://codesandbox.io/s/vue-js-driver-example-hywqeu)
+
+![demo.gif](https://raw.githubusercontent.com/hua909000/vue-js-driver/master/demo.gif)
 
 ## 📦 安装
 
