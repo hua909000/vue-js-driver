@@ -31,6 +31,8 @@ export default {
   },
   methods: {
     showDriver () {
+
+      // 通过$vueJsDriver来调用，1代表跳转到第二步，不传默认跳转至第一步
       this.$vueJsDriver.showDriver(steps.homeSteps);
     },
     highSingleElement () {
