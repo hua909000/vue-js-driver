@@ -1,6 +1,6 @@
 {
   "name": "vue-js-driver",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "基于driver.js封装的vue2版本轻量级新手引导库",
   "main": "index.js",
   "scripts": {
