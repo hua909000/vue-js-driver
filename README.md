@@ -3,7 +3,7 @@
 ![npm](https://img.shields.io/npm/v/vue-js-driver)
 ![GitHub top language](https://img.shields.io/github/languages/top/hua909000/vue-js-driver)
 ![GitHub file size in bytes](https://img.shields.io/github/size/hua909000/vue-js-driver/index.js)
-![Bower](https://img.shields.io/bower/l/vue-js-driver)
+![NPM](https://img.shields.io/npm/l/vue-js-driver)
 
 > 基于driver.js封装的vue2版轻量级新手引导库
 
@@ -45,23 +45,44 @@ import driverConfig from '@/config/driverConfig.js';
 Vue.use(vueJsDriver, driverConfig);
 ```
 
-### 配置步骤
+### 配置Driver
+
 ```js
 // driverConfig.js
 export default {
-  homeSteps: [
+  className: '', // 包裹Driver弹窗的类名，避免css作用域污染
+  allowClose: false, // 是否允许点击遮罩时关闭
+  opacity: 0, // 背景透明度，`0` 表示只弹窗无遮罩
+  padding: 0, // 元素与边缘的距离
+  stageBackground: 'transparent', // 高亮元素的背景颜色
+  prevBtnText: '上一步->', // 当前步骤上一步按钮的文本
+  nextBtnText: '下一步->', // 当前步骤下一步按钮的文本
+  closeBtnText: '关闭x', // 当前步骤关闭按钮的文本
+  doneBtnText: '完成√', // 最后一个按钮的文本
+  showButtons: false // 是否显示底部的控制按钮
+  ...
+}
+```
+
+### 配置步骤
+```js
+// steps.js
+export default {
+  homeSteps: [ // 首页步骤
     {
-      element: '#welcome', // 高亮的元素 内部通过querySelector获取元素，还可通过DOM的方法获取，例如document.getElementById('welcome')
+      element: '#welcome', // 高亮的元素，内部通过querySelector获取元素，还可通过DOM的方法获取，例如document.getElementById('welcome')
       popover: {
-          title: '这是标题', // 标题，为空需要设置，否则不显示 ps：支持HTML
-          description: '这是描述', // 描述 ps：支持HTML
-          position: 'right', // 弹窗显示的位置 left, left-center, left-bottom, top, top-center, top-right, right, right-center, right-bottom,bottom, bottom-center, bottom-right, mid-center
+          title: '这是标题', // 弹窗的标题，为空则不显示，注：支持HTML
+          description: '这是描述', // 弹窗的主体内容，注：支持HTML
+          position: 'right', // 弹窗显示的位置
       },
-      padding: 25 // 弹窗与高亮元素的内边距
+      padding: 25 // 弹窗与高亮元素的内边距，会扩大高亮元素的宽/高
       ...
       // 更多配置：https://github.com/kamranahmedse/driver.js/blob/master/src/index.js
     }
-  ]
+  ],
+  otherSteps: [], // 其他页面步骤
+  ...
 }
 ```
 
@@ -78,6 +99,8 @@ export default {
       <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
     </p>
     <h3 @click="showDriver">显示引导Show Demo</h3>
+    <h3 @click="highSingleElement">突出单个元素</h3>
+    <h3 @click="highSingleElement2">突出单个元素（含配置）</h3>
   </div>
 </template>
 
@@ -91,8 +114,22 @@ export default {
   methods: {
     showDriver () {
 
-      // 通过$vueJsDriver来调用，1代表默认跳转到第二步
+      // 通过$vueJsDriver来调用，1代表跳转到第二步，不传默认跳转至第一步
       this.$vueJsDriver.showDriver(steps.homeSteps, 1);
+    },
+    highSingleElement () {
+      this.$sfDriverJs.highlight('#welcome');
+    },
+    highSingleElement2 () {
+      this.$sfDriverJs.highlight({
+        element: '#welcome',
+        popover: {
+          title: 'Title for the Popover',
+          description: 'Description for it',
+          position: 'bottom',
+          offset: 20
+        }
+      });
     }
   },
   ...
@@ -107,7 +144,7 @@ export default {
 | --------------------- | ------------------------------------------------------------ | ------------------- | ------ | ------------- |
 | className             | 包裹Driver弹窗的类名                                         | string              | —      | vue-js-driver |
 | animate               | 是否开启过渡动画                                             | boolean             | —      | true          |
-| opacity               | 背景透明度（`0` 表示只弹窗无遮罩）                           | number              | 0-1    | 0.75          |
+| opacity               | 背景透明度，`0` 表示只弹窗无遮罩                             | number              | 0-1    | 0.75          |
 | padding               | 元素与边缘的距离                                             | number              | —      | 10            |
 | allowClose            | 是否允许点击遮罩时关闭                                       | boolean             | —      | true          |
 | overlayClickNext      | 是否允许点击遮罩时移动到下一步                               | boolean             | —      | false         |
@@ -128,26 +165,26 @@ export default {
 
 ### Step步骤选项
 
-| 参数            | 说明                                                         | 类型/回调参数       | 可选值 | 默认值   |
-| --------------- | ------------------------------------------------------------ | ------------------- | ------ | -------- |
-| element         | 需要被高亮的查询选择器字符或Node                             | string/Node         | —      | —        |
-| stageBackground | 高亮元素的背景颜色                                           | string              | —      | \#ffffff |
-| padding         | 弹窗与高亮元素的内边距，会扩大高亮元素的宽/高                | number              | —      | —        |
-| onNext          | 从当前步骤移动到下一步时调用                                 | function(element){} | —      | —        |
-| onPrevious      | 从当前步骤移动到上一步时调用                                 | function(element){} | —      | —        |
-| popover         | 弹窗的配置项，**具体参考以下选项**，注：为空不会显示弹窗     | object              | —      | —        |
-| className       | 除了Driver选项中的通用类名称之外，还可以指定包裹当前指定步骤弹窗的类名 | string              | —      | ''       |
-| title           | 弹窗的标题                                                   | string              | —      | —        |
-| description     | 弹窗的主体内容                                               | string              | —      | —        |
-| position        | 弹窗的位置                                                   | string              | —      | bottom   |
-| offset          | 弹窗的平移距离，如弹窗在高亮元素下方，offet控制左右位移，margin控制上下 | number              | 可负数 | —        |
-| margin          | 弹窗与高亮元素的外边距                                       | number              | 可负数 | —        |
-| padding         | 弹窗与高亮元素的内边距                                       | number              | 可负数 | —        |
-| showButtons     | 是否显示底部的控制按钮                                       | boolean             | —      | true     |
-| doneBtnText     | 最后一个按钮上的文本                                         | string              | —      | Done     |
-| closeBtnText    | 当前步骤关闭按钮上的文本                                     | string              | —      | Close    |
-| nextBtnText     | 当前步骤上一步按钮上的文本                                   | string              | —      | Next     |
-| prevBtnText     | 当前步骤下一步按钮上的文本                                   | string              | —      | Previous |
+| 参数            | 说明                                                         | 类型/回调参数       | 可选值                                                       | 默认值   |
+| --------------- | ------------------------------------------------------------ | ------------------- | ------------------------------------------------------------ | -------- |
+| element         | 需高亮的选择器字符或Node，内部通过querySelector获取元素，还可通过DOM的方法获取 | string/Node         | —                                                            | —        |
+| stageBackground | 高亮元素的背景颜色                                           | string              | —                                                            | \#ffffff |
+| padding         | 弹窗与高亮元素的内边距，会扩大高亮元素的宽/高                | number              | —                                                            | —        |
+| onNext          | 从当前步骤移动到下一步时调用                                 | function(element){} | —                                                            | —        |
+| onPrevious      | 从当前步骤移动到上一步时调用                                 | function(element){} | —                                                            | —        |
+| popover         | 弹窗的配置项，**具体参考以下选项**，注：为空不会显示弹窗     | object              | —                                                            | —        |
+| className       | 除了Driver选项中的通用类名称之外，还可以指定包裹当前指定步骤弹窗的类名 | string              | —                                                            | ''       |
+| title           | 弹窗的标题，为空则不显示，注：支持HTML                       | string              | —                                                            | —        |
+| description     | 弹窗的主体内容，注：支持HTML                                 | string              | —                                                            | —        |
+| position        | 弹窗的位置                                                   | string              | left, left-center, left-bottom, top, top-center, top-right, right, right-center, right-bottom,bottom, bottom-center, bottom-right, mid-center | bottom   |
+| offset          | 弹窗的平移距离，如弹窗在高亮元素下方，offet控制左右位移，margin控制上下 | number              | 可负数                                                       | —        |
+| margin          | 弹窗与高亮元素的外边距                                       | number              | 可负数                                                       | —        |
+| padding         | 弹窗与高亮元素的内边距                                       | number              | 可负数                                                       | —        |
+| showButtons     | 是否显示底部的控制按钮                                       | boolean             | —                                                            | true     |
+| doneBtnText     | 最后一个按钮的文本                                           | string              | —                                                            | Done     |
+| closeBtnText    | 当前步骤关闭按钮的文本                                       | string              | —                                                            | Close    |
+| nextBtnText     | 当前步骤下一步按钮的文本                                     | string              | —                                                            | Next     |
+| prevBtnText     | 当前步骤上一步按钮的文本                                     | string              | —                                                            | Previous |
 
 ### 方法
 
